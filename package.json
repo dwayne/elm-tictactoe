@@ -1,0 +1,7 @@
+{
+  "name": "elm-tictactoe",
+  "private": true,
+  "dependencies": {
+    "elm": "^0.19.1-5"
+  }
+}
