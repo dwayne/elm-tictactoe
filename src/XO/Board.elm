@@ -28,8 +28,8 @@ empty = Board []
 -- MODIFY
 
 
-put : Mark -> Position -> Board -> Board
-put mark p (Board moves) = Board ((p, mark) :: moves)
+put : Position -> Mark -> Board -> Board
+put p mark (Board moves) = Board ((p, mark) :: moves)
 
 
 -- QUERY
