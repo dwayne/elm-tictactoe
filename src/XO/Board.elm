@@ -8,6 +8,7 @@ module XO.Board exposing
   )
 
 
+import Lib exposing (lookup)
 import XO.Mark exposing (Mark)
 
 
@@ -72,19 +73,6 @@ allPositions =
 
 isNotMember : a -> List (a, b) -> Bool
 isNotMember key = (==) Nothing << lookup key
-
-
-lookup : a -> List (a, b) -> Maybe b
-lookup searchKey aList =
-  case aList of
-    [] ->
-      Nothing
-
-    (key, value) :: rest ->
-      if searchKey == key then
-        Just value
-      else
-        lookup searchKey rest
 
 
 flip : (a -> b -> c) -> b -> a -> c
