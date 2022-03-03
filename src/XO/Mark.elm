@@ -1,4 +1,4 @@
-module XO.Mark exposing (Mark (..), swap)
+module XO.Mark exposing (Mark(..), swap)
 
 
 type Mark

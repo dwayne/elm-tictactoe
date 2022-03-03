@@ -1,4 +1,4 @@
-module XO.Referee exposing (Outcome (..), Location (..), unsafeDecide)
+module XO.Referee exposing (Outcome(..), Location(..), unsafeDecide)
 
 
 import Lib exposing (lookup)
