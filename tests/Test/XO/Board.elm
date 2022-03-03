@@ -3,9 +3,10 @@ module Test.XO.Board exposing (suite)
 
 import Expect
 import Test exposing (..)
+import Test.Helpers exposing (putMany)
 
-import XO.Board as Board exposing (Board, Position)
-import XO.Mark as Mark exposing (Mark (..))
+import XO.Board as Board
+import XO.Mark exposing (Mark(..))
 
 
 suite : Test
@@ -63,21 +64,3 @@ tilesSuite =
                 , Nothing, Nothing, Nothing
                 ]
     ]
-
-
--- HELPERS
-
-
-putMany : Mark -> List Position -> Board
-putMany mark positions =
-  putManyHelper mark positions Board.empty
-
-
-putManyHelper : Mark -> List Position -> Board -> Board
-putManyHelper mark positions board =
-  case positions of
-    [] ->
-      board
-
-    p :: rest ->
-      putManyHelper (Mark.swap mark) rest (Board.put p mark board)
