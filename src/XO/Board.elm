@@ -5,11 +5,12 @@ module XO.Board exposing
   , isOpen, inBounds, openPositions
   , Tile
   , tiles
+  , toString
   )
 
 
 import Lib exposing (lookup)
-import XO.Mark exposing (Mark)
+import XO.Mark exposing (Mark(..))
 
 
 type Board = Board (List Move)
@@ -55,6 +56,24 @@ type alias Tile = Maybe Mark
 
 tiles : Board -> List Tile
 tiles (Board moves) = List.map (flip lookup moves) allPositions
+
+
+toString : Board -> String
+toString board =
+  tiles board
+    |> List.map
+        (\tile ->
+            case tile of
+              Nothing ->
+                "."
+
+              Just X ->
+                "x"
+
+              Just O ->
+                "o"
+        )
+    |> String.concat
 
 
 -- CONSTANTS

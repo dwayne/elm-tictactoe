@@ -2,6 +2,7 @@ module XO.Game exposing
   ( Game
   , start
   , play, restart
+  , Error(..)
   , State
   , state
   , openPositions
@@ -47,7 +48,7 @@ play p game =
         else
           Err Taken
       else
-        Err OutOfBounds
+        Err <| OutOfBounds p
 
     Done _ _ _ ->
       Err GameOver
@@ -55,7 +56,7 @@ play p game =
 
 type Error
   = Taken
-  | OutOfBounds
+  | OutOfBounds Position
   | GameOver
 
 
