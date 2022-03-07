@@ -1,8 +1,13 @@
 {
-  "name": "elm-tictactoe",
   "private": true,
+  "scripts": {
+    "build": "elm make src/Main.elm --debug --output=public/app.js",
+    "serve": "serve --single --debug public",
+    "test": "elm-test"
+  },
   "dependencies": {
     "elm": "^0.19.1-5",
-    "elm-test": "^0.19.1-revision7"
+    "elm-test": "^0.19.1-revision7",
+    "serve": "^13.0.2"
   }
 }

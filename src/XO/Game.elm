@@ -1,11 +1,10 @@
 module XO.Game exposing
   ( Game
   , start
-  , play, restart
+  , play, reset
   , Error(..)
   , State
   , state
-  , openPositions
   )
 
 
@@ -15,15 +14,29 @@ import XO.Referee as Referee exposing (Outcome(..))
 
 
 type Game
-  = Playing Board Mark
-  | Done Board Mark Outcome
+  = Playing
+      { first : Mark
+      , turn : Mark
+      , board : Board
+      }
+  | Done
+      { first : Mark
+      , turn : Mark
+      , board : Board
+      , outcome : Outcome
+      }
 
 
 -- CREATE
 
 
 start : Mark -> Game
-start = Playing Board.empty
+start first =
+  Playing
+    { first = first
+    , turn = first
+    , board = Board.empty
+    }
 
 
 -- MODIFY
@@ -32,53 +45,59 @@ start = Playing Board.empty
 play : Position -> Game -> Result Error Game
 play p game =
   case game of
-    Playing board mark ->
+    Playing { first, turn, board } ->
       if Board.inBounds p then
         if Board.isOpen p board then
           let
-            nextBoard = Board.put p mark board
+            nextBoard = Board.put p turn board
           in
           Ok <|
-            case Referee.unsafeDecide nextBoard mark of
+            case Referee.unsafeDecide nextBoard turn of
               Nothing ->
-                Playing nextBoard <| Mark.swap mark
+                Playing
+                  { first = first
+                  , turn = Mark.swap turn
+                  , board = nextBoard
+                  }
 
               Just outcome ->
-                Done nextBoard mark outcome
+                Done
+                  { first = first
+                  , turn = turn
+                  , board = nextBoard
+                  , outcome = outcome
+                  }
         else
-          Err Taken
+          Err (Taken p)
       else
-        Err <| OutOfBounds p
+        Err (OutOfBounds p)
 
-    Done _ _ _ ->
+    Done _ ->
       Err GameOver
 
 
 type Error
-  = Taken
+  = Taken Position
   | OutOfBounds Position
   | GameOver
 
 
-restart : Game -> Game
-restart game =
+reset : Game -> Game
+reset game =
   case game of
-    Playing _ mark ->
-      start mark
+    Playing { first } ->
+      start first
 
-    Done _ mark (Win _) ->
-      start mark
-
-    Done _ mark Squash ->
-      start <| Mark.swap mark
+    Done { first } ->
+      start first
 
 
 -- QUERY
 
 
 type alias State =
-  { board : Board
-  , turn : Mark
+  { turn : Mark
+  , board : Board
   , outcome : Maybe Outcome
   }
 
@@ -86,24 +105,14 @@ type alias State =
 state : Game -> State
 state game =
   case game of
-    Playing board mark ->
-      { board = board
-      , turn = mark
+    Playing { turn, board } ->
+      { turn = turn
+      , board = board
       , outcome = Nothing
       }
 
-    Done board mark outcome ->
-      { board = board
-      , turn = mark
+    Done { turn, board, outcome } ->
+      { turn = turn
+      , board = board
       , outcome = Just outcome
       }
-
-
-openPositions : Game -> List Position
-openPositions game =
-  case game of
-    Playing board _ ->
-      Board.openPositions board
-
-    Done _ _ _ ->
-      []

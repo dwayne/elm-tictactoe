@@ -3,14 +3,14 @@ module XO.Board exposing
   , empty
   , put
   , isOpen, inBounds, openPositions
-  , Tile
-  , tiles
+  , Tile, tiles
+  , Cell, cells
   , toString
   )
 
 
-import Lib exposing (lookup)
-import XO.Mark exposing (Mark(..))
+import AList
+import XO.Mark as Mark exposing (Mark(..))
 
 
 type Board = Board (List Move)
@@ -55,24 +55,20 @@ type alias Tile = Maybe Mark
 
 
 tiles : Board -> List Tile
-tiles (Board moves) = List.map (flip lookup moves) allPositions
+tiles (Board moves) = List.map (flip AList.lookup moves) allPositions
+
+
+type alias Cell = (Position, Tile)
+
+
+cells : Board -> List Cell
+cells board = zip allPositions (tiles board)
 
 
 toString : Board -> String
 toString board =
   tiles board
-    |> List.map
-        (\tile ->
-            case tile of
-              Nothing ->
-                "."
-
-              Just X ->
-                "x"
-
-              Just O ->
-                "o"
-        )
+    |> List.map (Maybe.withDefault "." << Maybe.map Mark.toString)
     |> String.concat
 
 
@@ -91,8 +87,21 @@ allPositions =
 
 
 isNotMember : a -> List (a, b) -> Bool
-isNotMember key = (==) Nothing << lookup key
+isNotMember key = (==) Nothing << AList.lookup key
 
 
 flip : (a -> b -> c) -> b -> a -> c
 flip f b a = f a b
+
+
+zip : List a -> List b -> List (a, b)
+zip xs ys =
+  case (xs, ys) of
+    ([], _) ->
+      []
+
+    (_, []) ->
+      []
+
+    (x :: xRest, y :: yRest) ->
+      (x, y) :: zip xRest yRest

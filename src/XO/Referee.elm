@@ -1,14 +1,19 @@
-module XO.Referee exposing (Outcome(..), Location(..), unsafeDecide)
+module XO.Referee exposing
+  ( Outcome(..)
+  , Location(..)
+  , unsafeDecide
+  , isWinningPosition
+  )
 
 
-import Lib exposing (lookup)
-import XO.Board as Board exposing (Board, Tile)
+import AList
+import XO.Board as Board exposing (Board, Position, Tile)
 import XO.Mark exposing (Mark)
 
 
 type Outcome
-  = Win Location
-  | Squash
+  = Win Mark Location
+  | Draw Mark
 
 type Location
   = R1
@@ -29,11 +34,11 @@ unsafeDecide board mark =
   in
   case findWin tiles mark of
     Just location ->
-      Just <| Win location
+      Just (Win mark location)
 
     Nothing ->
-      if isSquash tiles then
-        Just Squash
+      if isDraw tiles then
+        Just (Draw mark)
       else
         Nothing
 
@@ -44,7 +49,7 @@ findWin tiles mark =
     t =
       Just mark
   in
-  lookup (t, t, t) (arrangements tiles)
+  AList.lookup (t, t, t) (arrangements tiles)
 
 
 arrangements : List Tile -> List ((Tile, Tile, Tile), Location)
@@ -65,5 +70,38 @@ arrangements tiles =
       []
 
 
-isSquash : List Tile -> Bool
-isSquash = List.all <| (/=) Nothing
+isDraw : List Tile -> Bool
+isDraw = List.all ((/=) Nothing)
+
+
+isWinningPosition : Position -> Outcome -> Bool
+isWinningPosition (r, c) outcome =
+  case outcome of
+    Win _ location ->
+      case location of
+        R1 ->
+          r == 0
+
+        R2 ->
+          r == 1
+
+        R3 ->
+          r == 2
+
+        C1 ->
+          c == 0
+
+        C2 ->
+          c == 1
+
+        C3 ->
+          c == 2
+
+        D1 ->
+          r == c
+
+        D2 ->
+          r + c == 2
+
+    _ ->
+      False

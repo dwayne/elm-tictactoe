@@ -1,4 +1,4 @@
-module XO.Mark exposing (Mark(..), swap)
+module XO.Mark exposing (Mark(..), swap, toString)
 
 
 type Mark
@@ -14,3 +14,13 @@ swap mark =
 
     O ->
       X
+
+
+toString : Mark -> String
+toString mark =
+  case mark of
+    X ->
+      "X"
+
+    O ->
+      "O"

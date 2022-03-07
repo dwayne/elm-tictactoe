@@ -26,7 +26,7 @@ unsafeDecideSuite =
               putMany X [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2)]
           in
           Referee.unsafeDecide board X
-            |> Expect.equal (Just <| Win R1)
+            |> Expect.equal (Just <| Win X R1)
     , test "when O wins" <|
         \_ ->
           let
@@ -34,8 +34,8 @@ unsafeDecideSuite =
               putMany O [(2, 0), (1, 0), (2, 1), (1, 1), (2, 2)]
           in
           Referee.unsafeDecide board O
-            |> Expect.equal (Just <| Win R3)
-    , test "when squashed" <|
+            |> Expect.equal (Just <| Win O R3)
+    , test "when it's a draw" <|
         \_ ->
           let
             board =
@@ -46,7 +46,7 @@ unsafeDecideSuite =
                 ]
           in
           Referee.unsafeDecide board X
-            |> Expect.equal (Just Squash)
+            |> Expect.equal (Just <| Draw X)
     , test "after 2 plays" <|
         \_ ->
           let

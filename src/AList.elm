@@ -1,4 +1,4 @@
-module Lib exposing (lookup)
+module AList exposing (lookup)
 
 
 lookup : a -> List (a, b) -> Maybe b

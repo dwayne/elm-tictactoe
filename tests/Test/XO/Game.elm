@@ -15,7 +15,6 @@ suite : Test
 suite =
   describe "XO.Game"
     [ playSuite
-    , restartSuite
     ]
 
 
@@ -25,19 +24,19 @@ playSuite =
     [ test "after 3 plays" <|
         \_ ->
           playMany X [(1, 1), (0, 2), (2, 0)]
-            |> expectState O "..o.x.x.." Nothing
+            |> expectState O "..O.X.X.." Nothing
     , test "when X wins" <|
         \_ ->
           playMany X [(1, 1), (0, 2), (2, 0), (1, 2), (2, 2), (2, 1), (0, 0)]
-            |> expectState X "x.o.xoxox" (Just <| Win D1)
-    , test "when O squashes" <|
+            |> expectState X "X.O.XOXOX" (Just <| Win X D1)
+    , test "when O draws" <|
         \_ ->
           playMany O
             [ (1, 1), (0, 0), (2, 2)
             , (0, 2), (0, 1), (2, 1)
             , (1, 2), (1, 0), (2, 0)
             ]
-            |> expectState O "xoxxoooxo" (Just Squash)
+            |> expectState O "XOXXOOOXO" (Just <| Draw O)
     , test "when the position is taken" <|
         \_ ->
           let
@@ -45,7 +44,7 @@ playSuite =
               playMany X [(1, 1)]
           in
           Game.play (1, 1) game
-            |> Expect.equal (Err Taken)
+            |> Expect.equal (Err <| Taken (1, 1))
     , test "when the position is out of bounds" <|
         \_ ->
           Game.play (0, 4) (Game.start X)
@@ -58,31 +57,6 @@ playSuite =
           in
           Game.play (1, 2) game
             |> Expect.equal (Err GameOver)
-    ]
-
-
-restartSuite : Test
-restartSuite =
-  describe "restart"
-    [ test "after 3 plays on O's turn" <|
-        \_ ->
-          playMany X [(1, 1), (0, 2), (2, 0)]
-            |> Game.restart
-            |> expectState O "........." Nothing
-    , test "when X wins" <|
-        \_ ->
-          playMany X [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2)]
-            |> Game.restart
-            |> expectState X "........." Nothing
-    , test "when O squashes" <|
-        \_ ->
-          playMany O
-            [ (1, 1), (0, 0), (2, 2)
-            , (0, 2), (0, 1), (2, 1)
-            , (1, 2), (1, 0), (2, 0)
-            ]
-            |> Game.restart
-            |> expectState X "........." Nothing
     ]
 
 
