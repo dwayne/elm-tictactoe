@@ -4,7 +4,8 @@
     "build": "elm make src/Main.elm --debug --output=public/app.js",
     "build:prod": "scripts/build-prod.sh src/Main.elm",
     "serve": "serve --single --debug public",
-    "test": "elm-test"
+    "test": "elm-test",
+    "deploy": "scripts/deploy.sh"
   },
   "dependencies": {
     "elm": "^0.19.1-5",
