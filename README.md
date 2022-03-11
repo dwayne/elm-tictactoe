@@ -1,4 +1,4 @@
-# Tic-tac-toe
+# Tic-tac-toe - [Live Demo](https://dwayne.github.io/elm-tictactoe/)
 
 ![A screenshot of Tic-tac-toe](/screenshot.png)
 
