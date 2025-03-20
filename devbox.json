@@ -1,0 +1,14 @@
+{
+  "packages": [
+    "elmPackages.elm@latest",
+    "elmPackages.elm-test@latest"
+  ],
+  "env": {
+    "project": "$DEVBOX_PROJECT_ROOT"
+  },
+  "shell": {
+    "init_hook": [
+      "[ -f $project/init.sh ] && . $project/init.sh"
+    ]
+  }
+}

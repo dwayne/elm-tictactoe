@@ -1,4 +1,3 @@
-deploy/
-elm-stuff/
-node_modules/
-public/app.js
+/.devbox
+/elm-stuff
+/public/app.js
