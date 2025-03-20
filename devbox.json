@@ -1,8 +1,11 @@
 {
-  "packages": [
-    "elmPackages.elm@latest",
-    "elmPackages.elm-test@latest"
-  ],
+  "packages": {
+    "caddy": {
+      "version": "latest",
+      "disable_plugin": true
+    },
+    "elmPackages.elm": "latest"
+  },
   "env": {
     "project": "$DEVBOX_PROJECT_ROOT"
   },
