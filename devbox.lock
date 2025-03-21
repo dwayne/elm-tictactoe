@@ -97,6 +97,54 @@
         }
       }
     },
+    "elmPackages.elm-optimize-level-2@latest": {
+      "last_modified": "2025-02-23T09:42:26Z",
+      "resolved": "github:NixOS/nixpkgs/2d068ae5c6516b2d04562de50a58c682540de9bf#elmPackages.elm-optimize-level-2",
+      "source": "devbox-search",
+      "version": "2-0.3.5",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/737lnc8dqva0pfa9wdpgx9akz4z2pw4p-elm-optimize-level-2-0.3.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/737lnc8dqva0pfa9wdpgx9akz4z2pw4p-elm-optimize-level-2-0.3.5"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zj3k1d7hgk5lzbf7ybwchmd3kqcph895-elm-optimize-level-2-0.3.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zj3k1d7hgk5lzbf7ybwchmd3kqcph895-elm-optimize-level-2-0.3.5"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ipymac3nxsvz87n3j88nz5a98lrw7m3m-elm-optimize-level-2-0.3.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ipymac3nxsvz87n3j88nz5a98lrw7m3m-elm-optimize-level-2-0.3.5"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wggci1flsim932klcll6qb5jkzvllr4q-elm-optimize-level-2-0.3.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wggci1flsim932klcll6qb5jkzvllr4q-elm-optimize-level-2-0.3.5"
+        }
+      }
+    },
     "elmPackages.elm@latest": {
       "last_modified": "2025-02-23T09:42:26Z",
       "resolved": "github:NixOS/nixpkgs/2d068ae5c6516b2d04562de50a58c682540de9bf#elmPackages.elm",
@@ -158,6 +206,54 @@
             }
           ],
           "store_path": "/nix/store/glg3biax75vxrs87l5jjc6bmgdh265nj-elm-0.19.1"
+        }
+      }
+    },
+    "terser@latest": {
+      "last_modified": "2025-03-07T01:26:00Z",
+      "resolved": "github:NixOS/nixpkgs/de0fe301211c267807afd11b12613f5511ff7433#terser",
+      "source": "devbox-search",
+      "version": "5.38.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/n41p1lyy1ap932mm42bfxm39f4jgkh63-terser-5.38.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/n41p1lyy1ap932mm42bfxm39f4jgkh63-terser-5.38.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8v9032v8llkcg9k0rxdy23kqs76zhbr1-terser-5.38.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8v9032v8llkcg9k0rxdy23kqs76zhbr1-terser-5.38.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/i8myvwh2b0990sz81isnvwq5w29bz2q9-terser-5.38.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/i8myvwh2b0990sz81isnvwq5w29bz2q9-terser-5.38.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/5cyiw9vqnzw33vapzx5la4d84z2wjq7x-terser-5.38.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/5cyiw9vqnzw33vapzx5la4d84z2wjq7x-terser-5.38.0"
         }
       }
     }
