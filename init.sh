@@ -2,8 +2,18 @@ format () {
   elm-format "$project/src" "${@:---yes}"
 }
 
-serve () {
-  local port="${1:-3000}"
+build-development () {
+  build "$build/development"
+}
 
-  caddy file-server --browse --listen :"$port" --root "$project/public"
+serve-development () {
+  serve "$build/development"
+}
+
+build-production () {
+  build "$build/production" 3
+}
+
+serve-production () {
+  serve "$build/production"
 }

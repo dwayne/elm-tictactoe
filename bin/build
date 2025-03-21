@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+#
+# Usage: build out [optimize_elm=0*|1|2|3]
+#
+
+set -euo pipefail
+
+out="${1:?}"
+optimize_elm="${2:-0}"
+
+src="${project:?}"
+
+main () {
+  clean
+  prepare
+  copy-public
+  run-build-elm
+}
+
+clean () {
+  rm -rf "$out"
+}
+
+prepare () {
+  mkdir -p "$out"
+}
+
+copy-public () {
+  cp -r "$src/public/"* "$out"
+}
+
+run-build-elm () {
+  build-elm "$src/src/Main.elm" "$out/app.js" "$optimize_elm"
+}
+
+main

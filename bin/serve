@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#
+# Usage: serve root [port=3000*]
+#
+
+set -euo pipefail
+
+root="${1:?}"
+port="${2:-3000}"
+
+caddy file-server --browse --listen :"$port" --root "$root"
