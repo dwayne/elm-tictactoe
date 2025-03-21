@@ -17,3 +17,7 @@ build-production () {
 serve-production () {
   serve "$build/production"
 }
+
+deploy-production () {
+  deploy -b gh-pages "$build/production"
+}
