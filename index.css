@@ -1,19 +1,15 @@
-:root {
+.grid {
   --cell-size: 30px;
   --column-width: var(--cell-size);
-}
 
-* {
-  box-sizing: border-box;
-}
-
-.grid {
   display: grid;
   grid-template-columns: var(--column-width) var(--column-width) var(--column-width);
   gap: 5px;
 }
 
 .grid__cell {
+  box-sizing: border-box;
+
   width: var(--cell-size);
   height: var(--cell-size);
   border: 1px solid black;
