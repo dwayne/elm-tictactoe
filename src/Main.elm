@@ -1,107 +1,100 @@
 module Main exposing (main)
 
-
 import Browser
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-
-import XO.Board as Board exposing (Board, Cell, Position)
-import XO.Game as Game exposing (Game)
-import XO.Mark as Mark exposing (Mark(..))
-import XO.Referee as Referee exposing (Outcome(..))
+import XO
 
 
 main : Program () Model Msg
 main =
-  Browser.sandbox
-    { init = init
-    , view = view
-    , update = update
-    }
+    Browser.sandbox
+        { init = init
+        , update = update
+        , view = view
+        }
+
 
 
 -- MODEL
 
 
 type alias Model =
-  { screen : Screen
-  }
+    { screen : Screen
+    }
 
 
 type Screen
-  = Start
-  | Playing Game
-  | GameOver Board Outcome
+    = Start
+    | Playing XO.Game
+    | GameOver XO.Game
 
 
 init =
-  { screen = Start
-  }
+    { screen = Start
+    }
+
 
 
 -- UPDATE
 
 
 type Msg
-  = ClickedStart Mark
-  | ClickedCell Position
-  | ClickedReset
-  | ClickedPlayAgain
-  | ClickedStop
+    = ClickedStart XO.Player
+    | ClickedCell XO.Position
+    | ClickedReset
+    | ClickedPlayAgain
+    | ClickedStop
 
 
 update : Msg -> Model -> Model
 update msg model =
-  case msg of
-    ClickedStart mark ->
-      { model | screen = Playing (Game.start mark) }
+    case msg of
+        ClickedStart player ->
+            { model | screen = Playing (XO.start player) }
 
-    ClickedCell p ->
-      case model.screen of
-        Playing game ->
-          case Game.play p game of
-            Ok nextGame ->
-              let
-                state =
-                  Game.state nextGame
-              in
-              case state.outcome of
-                Nothing ->
-                  { model | screen = Playing nextGame }
+        ClickedCell pos ->
+            case model.screen of
+                Playing game ->
+                    case XO.play pos game of
+                        Ok nextGame ->
+                            let
+                                state =
+                                    XO.toState nextGame
+                            in
+                            case state.outcome of
+                                XO.Undecided ->
+                                    { model | screen = Playing nextGame }
 
-                Just outcome ->
-                  { model | screen = GameOver state.board outcome }
+                                _ ->
+                                    { model | screen = GameOver nextGame }
 
-            Err _ -> -- UNREACHABLE
-              model
+                        Err _ ->
+                            model
 
-        _ ->
-          model
+                _ ->
+                    model
 
-    ClickedReset ->
-      case model.screen of
-        Playing game ->
-          { model | screen = Playing (Game.reset game) }
+        ClickedReset ->
+            case model.screen of
+                Playing game ->
+                    { model | screen = Playing (XO.playAgain XO.defaultRules game) }
 
-        _ ->
-          model
+                _ ->
+                    model
 
-    ClickedPlayAgain ->
-      case model.screen of
-        GameOver _ outcome ->
-          case outcome of
-            Win mark _ ->
-              { model | screen = Playing (Game.start mark) }
+        ClickedPlayAgain ->
+            case model.screen of
+                GameOver game ->
+                    { model | screen = Playing (XO.playAgain XO.defaultRules game) }
 
-            Draw mark ->
-              { model | screen = Playing (Game.start (Mark.swap mark)) }
+                _ ->
+                    model
 
-        _ ->
-          model
-    --
-    ClickedStop ->
-      { model | screen = Start }
+        ClickedStop ->
+            { model | screen = Start }
+
 
 
 -- VIEW
@@ -109,111 +102,141 @@ update msg model =
 
 view : Model -> H.Html Msg
 view { screen } =
-  case screen of
-    Start ->
-      viewStartScreen
+    case screen of
+        Start ->
+            viewStartScreen
 
-    Playing game ->
-      viewPlayingScreen game
+        Playing game ->
+            viewPlayingScreen game
 
-    GameOver board outcome ->
-      viewGameOverScreen board outcome
+        GameOver game ->
+            viewGameOverScreen game
 
 
 viewStartScreen : H.Html Msg
 viewStartScreen =
-  H.div []
-    [ H.p []
-        [ H.button
-            [ HE.onClick (ClickedStart X) ]
-            [ H.text "Start with X" ]
+    H.div []
+        [ H.p []
+            [ H.button
+                [ HE.onClick (ClickedStart XO.X) ]
+                [ H.text "Start with X" ]
+            ]
+        , H.p []
+            [ H.button
+                [ HE.onClick (ClickedStart XO.O) ]
+                [ H.text "Start with O" ]
+            ]
         ]
-    , H.p []
-        [ H.button
-            [ HE.onClick (ClickedStart O) ]
-            [ H.text "Start with O" ]
-        ]
-    ]
 
 
-viewPlayingScreen : Game -> H.Html Msg
+viewPlayingScreen : XO.Game -> H.Html Msg
 viewPlayingScreen game =
-  let
-    state =
-      Game.state game
-  in
-  H.div []
-    [ H.p []
-        [ H.text "Turn: "
-        , H.text (Mark.toString state.turn)
+    let
+        state =
+            XO.toState game
+    in
+    H.div []
+        [ H.p []
+            [ H.text "Turn: "
+            , H.text (playerToString state.turn)
+            ]
+        , viewGrid state.outcome game
+        , H.p []
+            [ H.button [ HE.onClick ClickedReset ] [ H.text "Reset" ]
+            , H.text " "
+            , H.button [ HE.onClick ClickedStop ] [ H.text "Stop" ]
+            ]
         ]
-    , viewGrid Nothing (Board.cells state.board)
-    , H.p []
-        [ H.button [ HE.onClick ClickedReset ] [ H.text "Reset" ]
-        , H.text " "
-        , H.button [ HE.onClick ClickedStop ] [ H.text "Stop" ]
+
+
+viewGameOverScreen : XO.Game -> H.Html Msg
+viewGameOverScreen game =
+    let
+        state =
+            XO.toState game
+    in
+    H.div []
+        [ H.p []
+            [ H.text <|
+                case state.outcome of
+                    XO.Win player _ ->
+                        playerToString player ++ " won"
+
+                    XO.Draw _ ->
+                        "It's a draw"
+
+                    XO.Undecided ->
+                        ""
+            ]
+        , viewGrid state.outcome game
+        , H.p []
+            [ H.button [ HE.onClick ClickedPlayAgain ] [ H.text "Play Again" ]
+            , H.text " "
+            , H.button [ HE.onClick ClickedStop ] [ H.text "Stop" ]
+            ]
         ]
-    ]
 
 
-viewGameOverScreen : Board -> Outcome -> H.Html Msg
-viewGameOverScreen board outcome =
-  H.div []
-    [ H.p []
-        [ H.text <|
-            case outcome of
-              Win mark _ ->
-                Mark.toString mark ++ " won"
-
-              Draw _ ->
-                "It's a draw"
-        ]
-    , viewGrid (Just outcome) (Board.cells board)
-    , H.p []
-        [ H.button [ HE.onClick ClickedPlayAgain ] [ H.text "Play Again" ]
-        , H.text " "
-        , H.button [ HE.onClick ClickedStop ] [ H.text "Stop" ]
-        ]
-    ]
-
-
-viewGrid : Maybe Outcome -> List Cell -> H.Html Msg
+viewGrid : XO.Outcome -> XO.Game -> H.Html Msg
 viewGrid outcome =
-  H.div [ HA.class "grid" ] << List.map (viewCell outcome)
+    H.div [ HA.class "grid" ] << XO.map (viewCell outcome)
 
 
-viewCell : Maybe Outcome -> Cell -> H.Html Msg
-viewCell maybeOutcome (p, tile) =
-  let
-    baseAttrs =
-      [ HA.classList
-          [ ("grid__cell", True)
-          , ("grid__cell--win", isWinningCell)
-          ]
-      ]
+viewCell : XO.Outcome -> XO.Position -> XO.Tile -> H.Html Msg
+viewCell outcome pos tile =
+    let
+        baseAttrs =
+            [ HA.classList
+                [ ( "grid__cell", True )
+                , ( "grid__cell--win", isWinning )
+                ]
+            ]
 
-    (additionalAttrs, tileText) =
-      case tile of
-        Nothing ->
-          ( if isPlaying then
-              [ HE.onClick (ClickedCell p) ]
-            else
-              []
-          , ""
-          )
+        ( additionalAttrs, text ) =
+            case tile of
+                Just player ->
+                    ( [], playerToString player )
 
-        Just mark ->
-          ( [], Mark.toString mark )
+                Nothing ->
+                    ( if isPlaying then
+                        [ HE.onClick (ClickedCell pos) ]
 
-    (isWinningCell, isPlaying) =
-      case maybeOutcome of
-        Just outcome ->
-          (Referee.isWinningPosition p outcome, False)
+                      else
+                        []
+                    , ""
+                    )
 
-        Nothing ->
-          (False, True)
+        ( isWinning, isPlaying ) =
+            case outcome of
+                XO.Win _ lines ->
+                    ( List.any (isWinningPosition pos) lines, False )
 
-    attrs =
-      baseAttrs ++ additionalAttrs
-  in
-  H.div attrs [ H.text tileText ]
+                XO.Draw _ ->
+                    ( False, False )
+
+                XO.Undecided ->
+                    ( False, True )
+
+        attrs =
+            baseAttrs ++ additionalAttrs
+    in
+    H.div attrs [ H.text text ]
+
+
+
+-- HELPERS
+
+
+playerToString : XO.Player -> String
+playerToString player =
+    case player of
+        XO.X ->
+            "X"
+
+        XO.O ->
+            "O"
+
+
+isWinningPosition : XO.Position -> XO.Line -> Bool
+isWinningPosition pos ( p1, p2, p3 ) =
+    pos == p1 || pos == p2 || pos == p3

@@ -1,3 +1,7 @@
+format () {
+  elm-format "$project/src" "${@:---yes}"
+}
+
 serve () {
   local port="${1:-3000}"
 
